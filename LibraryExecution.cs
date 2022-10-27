@@ -1,12 +1,14 @@
-﻿// See https://aka.ms/new-console-template for more information
+// See https://aka.ms/new-console-template for more information
 using LibraryRepository;
 using System;
 public class LibraryExecution
 {
     public static void Main (string[] args)
     {
-        LibraryManager library = new LibraryManager();
-        library.IsLibraryEmpty();
+      
+        Consolelogger logger = new Consolelogger();
+        LibraryManager library = new LibraryManager(logger);
+
         Book book1 = new Book(1,"Ramayanam", "Valmiki");
         Book book2 = new Book(2,"HarryPotter", "Jk Rowling");
         Book book3 = new Book(3,"Merchant of venice", "Shakesphere");
@@ -57,7 +59,7 @@ public class LibraryExecution
         }
         try
         {
-            Book book = library.GetBookById(1);
+            Book book = library.GetBookById(5);
             Console.WriteLine("The Book With the Given Id is " + book.BookName);
 
         }
@@ -65,9 +67,9 @@ public class LibraryExecution
         {
             Console.WriteLine(ex.Message);
         }
- 
 
-        library.IsLibraryEmpty();
+
+        
         
         
 
