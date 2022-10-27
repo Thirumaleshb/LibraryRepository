@@ -1,4 +1,5 @@
 using LibraryRepository;
+using System.ComponentModel;
 
 namespace LibraryTestCases
 {
@@ -8,42 +9,56 @@ namespace LibraryTestCases
     {
         public TestContext TestContext { get; set; }
         [TestMethod]
-        [ExpectedException(typeof(OutOfMemoryException), "Thier is No Space Left to Add the Given Book")]
+
         public void AddMethodTest()
         {
 
             Book book1 = new Book(1, "MoneyPower", "RGV");
             Book book2 = new Book(2, "Crime", "Thiru");
-            LibraryManager libraryObj = new LibraryManager();
+            Consolelogger logger = new Consolelogger();
+            LibraryManager libraryObj = new LibraryManager(logger);
+           // int value = libraryObj.GetAllBooks().Count;
             libraryObj.AddBook(book1);
             libraryObj.AddBook(book2);
-            TestContext.WriteLine("The Value of Books Count is " + LibraryManager.BooksCount);
+            Assert.AreEqual(2, libraryObj.GetAllBooks().Count);
         }
 
 
 
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException), "Book Details Cannot be Fetched")]
+
         public void GetAllBooksTest()
         {
-            LibraryManager libraryObj = new LibraryManager();
-            List<Book> allBooks = libraryObj.GetAllBooks();
+            ILogger logger = new Consolelogger();
+            LibraryManager libraryObj = new LibraryManager(logger);
+            Book book1 = new Book(110, "Game", "Mark");
+            libraryObj.AddBook(book1);
+            List<Book> bookList = libraryObj.GetAllBooks();
+           
+            int value = libraryObj.GetAllBooks().Count;
+            Book book2 = new Book(10, "Game", "Mark");
+            libraryObj.AddBook(book1);
+            int value1 = bookList.Count;
+
+            Assert.IsTrue(value != libraryObj.GetAllBooks().Count);
+
+
+
+
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException), "Book With Given Id is not Present")]
         public void GetBookByIdTest()
         {
+           ILogger logger = new Consolelogger();
             Book book1 = new Book(10, "Game", "Mark");
+            LibraryManager libraryObj = new LibraryManager(logger);
+            //libraryObj.AddBook(book1);
+            libraryObj.GetBookById(0);
 
-            LibraryManager libraryObj = new LibraryManager();
-            libraryObj.AddBook(book1);
-            TestContext.WriteLine("The Value of the BooksCount is " + LibraryManager.BooksCount);
-            // libraryObj.GetBookById(11);
-            libraryObj.GetBookById(1);
-            
-            
+
         }
 
         [TestMethod]
@@ -52,27 +67,42 @@ namespace LibraryTestCases
         {
             Book book1 = new Book(10, "Game", "Mark");
             Book book2 = new Book(11, "GameChanger", "Henry");
-            
-            LibraryManager libraryObj = new LibraryManager();
+            ILogger logger = new Consolelogger();
+
+            LibraryManager libraryObj = new LibraryManager(logger);
             libraryObj.AddBook(book1);
             libraryObj.AddBook(book2);
-            libraryObj.GetBooksByAuthorName("Mark");
+            libraryObj.GetBooksByAuthorName("Chethan");
+        }
 
-
+        [TestMethod]
+     
+        public void NonExceptionForGetBookById()
+        {
+            Book book1 = new Book(10, "Game", "Mark");
+            ILogger logger = new Consolelogger();
+            LibraryManager libraryObj = new LibraryManager(logger);
+            libraryObj.AddBook(book1);
+           // libraryObj.GetBookById(0);
+            Book book= libraryObj.GetBookById(10);
+            Assert.IsNotNull(book); 
 
 
         }
 
-
         [TestMethod]
-        public void IsLibraryEmptyTest()
+       
+        public void NonExceptionForGetBooksByAuthorName()
         {
-            bool value = true; //Considering library is Empty
-            if (LibraryManager.BooksCount != 0)
-            {
-                value = false;
-            }
-            Assert.IsTrue(value);
+            Book book1 = new Book(10, "Game", "Mark");
+            Book book2 = new Book(11, "GameChanger", "Henry");
+            Consolelogger logger = new Consolelogger();
+            LibraryManager libraryObj = new LibraryManager(logger);
+            libraryObj.AddBook(book1);
+            libraryObj.AddBook(book2);
+            List<Book>bookList=libraryObj.GetBooksByAuthorName("Henry");
+            Assert.IsNotNull(bookList);
+
         }
     }
 }
