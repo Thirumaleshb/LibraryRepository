@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Metadata;
@@ -9,15 +9,21 @@ using LibraryRepository;
 
 public class LibraryManager : ILibrary
 {
-    public static int LibraryCapacity = 250;
-    public static int BooksCount = 0;
-    static List<Book> Books = new List<Book>();
 
+    public LibraryManager(ILogger logger)
+    {
+        this.logger = logger;
+    }
+    List<Book> books = new List<Book>();
+    private readonly ILogger logger;
 
     public Book GetBookById(int id)
     {
+        //consoleObj.logs.AppendLine("User is executing  GetBookById Method");
+        logger.Log("User is trying to GetBook By using It's ID");
 
-        Book? book = Books?.Find(i => i?.Id == id);
+        Book book = books.Find(i => i?.Id == id);
+        Console.WriteLine(book);
         if (book is null)
         {
             throw new ArgumentException("Book With Entered Id is not present");
@@ -27,73 +33,45 @@ public class LibraryManager : ILibrary
 
     public void AddBook(Book book)
     {
-        if (BooksCount == LibraryCapacity)
-        {
-            throw new OutOfMemoryException("Library is Full , Cannot Insert Further Books");
-        }
-        else
-        {
-            Books.Add(book);
-            BooksCount++;
-
-        }
-
+        //consoleObj.logs.AppendLine("User is Adding Book to Library");
+        logger.Log("User is Adding Book to Library");
+        books.Add(book);
+         
     }
+
     public List<Book> GetBooksByAuthorName(string Author)
     {
+        // consoleObj.logs.AppendLine("User is trying to fetch all the books by using Author name");
+        logger.Log("User is Trying to Get all the books by Author Name");
         if (string.IsNullOrEmpty(Author))
         {
             throw new ArgumentNullException("Entered AuthorName is Not Valid");
         }
-        else
+
+
+        List<Book> booksByAuthorName = (from book in books
+                                        where book.Author == Author
+                                        select book).ToList();
+        if (booksByAuthorName.Count == 0)
         {
-            List<Book> booksByAuthorName = (from book in Books
-                                            where book.Author == Author
-                                            select book).ToList();
-            if (booksByAuthorName.Count > 0)
-            {
-                return booksByAuthorName;
-
-            }
-            else
-            {
-                throw new ArgumentNullException($"We Couldn't Find the Books written by Author {Author} ");
-            }
-
-
+            throw new ArgumentNullException($"We Couldn't Find the Books written by Author {Author} ");
 
         }
-
-
+        return booksByAuthorName;
     }
 
     public List<Book> GetAllBooks()
     {
-        if (BooksCount == 0)
-        {
-            throw new ArgumentException("Thier is No Books Present in the Library");
-        }
-        else
-        {
-            return Books;
-        }
+        logger.Log("User is trying to get all the books ");
+
+        return books;
+
 
     }
 
 
 
-    public void IsLibraryEmpty()
-    {
 
-        if (BooksCount == 0)
-        {
-            Console.WriteLine("Library is Empty");
-        }
-        else
-        {
-            Console.WriteLine($"Library is not Empty it Contains {BooksCount} Books");
-        }
-    }
 }
 
 
