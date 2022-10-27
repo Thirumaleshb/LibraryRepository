@@ -16,8 +16,6 @@ namespace LibraryRepository
 
         Book GetBookById(int id);
 
-        void IsLibraryEmpty();
-
 
     }
 }
